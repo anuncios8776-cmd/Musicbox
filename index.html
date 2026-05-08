@@ -1,1 +1,138 @@
-<div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MusicBox - Tu app de música</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="logo">🎵 MusicBox</h1>
+            <button class="menu-btn" id="menuBtn">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sección de reproducción actual -->
+            <div class="now-playing-section">
+                <div class="album-art" id="albumArt">
+                    <i class="fas fa-music"></i>
+                </div>
+                <div class="song-info" id="songInfo">
+                    <h2 class="song-title">No hay canción</h2>
+                    <p class="song-artist">Selecciona o sube una canción</p>
+                </div>
+            </div>
+
+            <!-- Controles de reproducción -->
+            <div class="player-controls">
+                <button class="control-btn" id="prevBtn">
+                    <i class="fas fa-backward"></i>
+                </button>
+                <button class="control-btn play-btn" id="playPauseBtn">
+                    <i class="fas fa-play"></i>
+                </button>
+                <button class="control-btn" id="nextBtn">
+                    <i class="fas fa-forward"></i>
+                </button>
+            </div>
+
+            <!-- Barra de progreso -->
+            <div class="progress-container">
+                <span class="time current" id="currentTime">0:00</span>
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress" id="progress"></div>
+                </div>
+                <span class="time total" id="totalTime">0:00</span>
+            </div>
+
+            <!-- Controles de volumen -->
+            <div class="volume-control">
+                <i class="fas fa-volume-down" id="volumeIcon"></i>
+                <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.7">
+            </div>
+
+            <!-- Sección de biblioteca -->
+            <div class="library-section">
+                <div class="section-header">
+                    <h3><i class="fas fa-headphones"></i> Mi Biblioteca</h3>
+                    <button class="add-btn" id="addSongBtn">
+                        <i class="fas fa-plus"></i> Agregar
+                    </button>
+                </div>
+                
+                <!-- Lista de canciones -->
+                <ul class="song-list" id="songList">
+                    <li class="empty-state">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>No hay canciones. ¡Sube tu primera canción!</p>
+                    </li>
+                </ul>
+            </div>
+        </main>
+
+        <!-- Modal para agregar canciones -->
+        <div class="modal" id="addSongModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Agregar música</h3>
+                    <button class="close-btn" id="closeModalBtn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Selecciona un archivo de música (MP3, WAV, OGG):</p>
+                    <input type="file" id="fileInput" accept="audio/*" multiple>
+                    <div class="file-info" id="fileInfo"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="cancel-btn" id="cancelBtn">Cancelar</button>
+                    <button class="save-btn" id="saveBtn" disabled>Subir</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de reproducción ampliado -->
+        <div class="fullscreen-modal" id="fullscreenPlayer">
+            <div class="fullscreen-content">
+                <button class="close-fullscreen" id="closeFullscreen">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="fullscreen-album">
+                    <div class="large-album-art" id="largeAlbumArt">
+                        <i class="fas fa-music"></i>
+                    </div>
+                </div>
+                <div class="fullscreen-info">
+                    <h2 class="fullscreen-title" id="fullscreenTitle">Título</h2>
+                    <p class="fullscreen-artist" id="fullscreenArtist">Artista</p>
+                </div>
+                <div class="fullscreen-controls">
+                    <button class="control-btn large" id="fullscreenPrev">
+                        <i class="fas fa-backward"></i>
+                    </button>
+                    <button class="control-btn large play-btn" id="fullscreenPlayPause">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="control-btn large" id="fullscreenNext">
+                        <i class="fas fa-forward"></i>
+                    </button>
+                </div>
+                <div class="fullscreen-progress">
+                    <span class="time" id="fullCurrentTime">0:00</span>
+                    <div class="progress-bar large" id="fullProgressBar">
+                        <div class="progress" id="fullProgress"></div>
+                    </div>
+                    <span class="time" id="fullTotalTime">0:00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
