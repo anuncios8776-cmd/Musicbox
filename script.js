@@ -1,3 +1,11 @@
+// Configuración de Supabase
+const SUPABASE_URL = https://qgtbqxdqxazfjiqizfxg.supabase.co/rest/v1/;
+const SUPABASE_ANON_KEY = sb_publishable_S6EyDHWJ04mcfxSacTKVag_I2HaB93-;
+
+// Inicializar cliente de Supabase
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+
 // Clase principal de la aplicación
 class MusicApp {
     constructor() {
@@ -10,7 +18,7 @@ class MusicApp {
         this.init();
     }
 
-    async init() {
+    async uploadToCloud(file, metadata) {
         await this.initDB();
         this.loadSongs();
         this.initElements();
