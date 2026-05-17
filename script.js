@@ -298,12 +298,11 @@ class MusicApp {
         this.elements.fullscreenArtist.textContent = 'Selecciona o sube una canción';
     }
 
-    playSong(index) {
-        if (index >= 0 && index < this.songs.length) {
-            this.currentSongIndex = index;
-            const song = this.songs[index];
+    // Modifica la función playSong para que funcione con la URL de la nube
+    async playSongFromCloud(song) {
+    // song.song_url es la URL pública que obtuvimos de Supabase
             
-            this.audio.src = song.data;
+            this.audio.src = song.song_url; // ¡Streaming directo desde la CDN!
             this.audio.play();
             this.isPlaying = true;
             
