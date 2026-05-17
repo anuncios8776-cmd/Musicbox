@@ -1,6 +1,6 @@
 // Configuración de Supabase
-const SUPABASE_URL = https://qgtbqxdqxazfjiqizfxg.supabase.co/rest/v1/;
-const SUPABASE_ANON_KEY = sb_publishable_S6EyDHWJ04mcfxSacTKVag_I2HaB93-;
+const SUPABASE_URL = 'https://qgtbqxdqxazfjiqizfxg.supabase.co/rest/v1/';
+const SUPABASE_ANON_KEY = 'sb_publishable_S6EyDHWJ04mcfxSacTKVag_I2HaB93-';
 
 // Inicializar cliente de Supabase
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -19,24 +19,25 @@ class MusicApp {
     }
 
     async uploadToCloud(file, metadata) {
-       try {
-            // 1. Generar un nombre único para evitar conflictos
+        try {
+            // 1. Generar un nombre unico para evitar conflictos
             const fileExt = file.name.split('.').pop();
             const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+            return null;
 
-         // 2. Subir el archivo MP3 al Storage de Supabase
+            // 2. Subir el archivo MP3 al Storage de supabase
             const { data: songData, error: songError } = await supabase.storage
                 .from('music-box')
                 .upload(`songs/${fileName}`, file);
 
-        if (songError) throw songError;
+            if (songError) throw songError;
 
-        // 3. Obtener la URL pública del archivo subido
-            const { data: { publicUrl: songUrl } } = supabase.storage
+            // 3. Obtener la URL pública del archivo subido
+            const { data: { publicUrl: songUrl } }  = supabase.storage
                 .from('music-box')
                 .getPublicUrl(`songs/${fileName}`);
 
-        // 4. Guardar los METADATOS en la tabla 'songs' de la base de datos
+            // 4. Guardar los metadatos en la tabla "songs" de la base de datos
             // de Supabase (PostgreSQL)
             const { data, error: dbError } = await supabase
                 .from('songs')
@@ -47,35 +48,22 @@ class MusicApp {
                         album: metadata.album,
                         duration: metadata.duration,
                         song_url: songUrl,
-                        // Si tuvieras una imagen de portada, la subirías igual
+                        // Si tuvieras una imagen de portada, la subirias igual
+                    }
+                ]);
 
-    }
+            if (dbErrror) throw dbError;
 
-    if (dbError) throw dbError;
-            
             console.log('Canción subida a la nube exitosamente');
             return true;
-            
+
         } catch (error) {
             console.error('Error al subir a la nube:', error);
             return false;
         }
+
     }
- 
-    // Función para obtener canciones desde la nube (¡el streaming es automático!)
-    async loadSongsFromCloud() {
-        const { data, error } = await supabase
-            .from('songs')
-            .select('*')
-            .order('created_at', { ascending: false });
-            
-        if (error) {
-            console.error('Error cargando canciones:', error);
-            return [];
-        }
-        
-        return data;
-    }
+
 
     async initDB() {
         return new Promise((resolve, reject) => {
@@ -135,22 +123,19 @@ class MusicApp {
         });
     }
 
-    async loadSongs() {
-        return new Promise((resolve, reject) => {
-            if (!this.db) return;
+    async loadSongsFromCloud() {
+        const { data, error } = await supabase
+            .from('songs')
+            .select('*')
+            .order('dateAdded', { ascending: false });
 
-            const transaction = this.db.transaction(['songs'], 'readonly');
-            const store = transaction.objectStore('songs');
-            const request = store.getAll();
+        if (error) {
+            console.error('Error cargando canciones:', error);
+            return [];
+        }
 
-            request.onsuccess = () => {
-                this.songs = request.result;
-                this.renderSongList();
-                resolve(this.songs);
-            };
+        return data;
 
-            request.onerror = () => reject(request.error);
-        });
     }
 
     async deleteSong(id) {
@@ -300,8 +285,7 @@ class MusicApp {
 
     // Modifica la función playSong para que funcione con la URL de la nube
     async playSongFromCloud(song) {
-    // song.song_url es la URL pública que obtuvimos de Supabase
-            
+    // song.song_url es la URL pública que obtuvimos de Supabase       
             this.audio.src = song.song_url; // ¡Streaming directo desde la CDN!
             this.audio.play();
             this.isPlaying = true;
