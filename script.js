@@ -51,6 +51,32 @@ class MusicApp {
 
     }
 
+    if (dbError) throw dbError;
+            
+            console.log('Canción subida a la nube exitosamente');
+            return true;
+            
+        } catch (error) {
+            console.error('Error al subir a la nube:', error);
+            return false;
+        }
+    }
+ 
+    // Función para obtener canciones desde la nube (¡el streaming es automático!)
+    async loadSongsFromCloud() {
+        const { data, error } = await supabase
+            .from('songs')
+            .select('*')
+            .order('created_at', { ascending: false });
+            
+        if (error) {
+            console.error('Error cargando canciones:', error);
+            return [];
+        }
+        
+        return data;
+    }
+
     async initDB() {
         return new Promise((resolve, reject) => {
             const request = indexedDB.open('MusicBoxDB', 1);
