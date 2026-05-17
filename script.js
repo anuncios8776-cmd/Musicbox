@@ -19,11 +19,36 @@ class MusicApp {
     }
 
     async uploadToCloud(file, metadata) {
-        await this.initDB();
-        this.loadSongs();
-        this.initElements();
-        this.initEvents();
-        this.updateUI();
+       try {
+            // 1. Generar un nombre único para evitar conflictos
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+
+         // 2. Subir el archivo MP3 al Storage de Supabase
+            const { data: songData, error: songError } = await supabase.storage
+                .from('music-box')
+                .upload(`songs/${fileName}`, file);
+
+        if (songError) throw songError;
+
+        // 3. Obtener la URL pública del archivo subido
+            const { data: { publicUrl: songUrl } } = supabase.storage
+                .from('music-box')
+                .getPublicUrl(`songs/${fileName}`);
+
+        // 4. Guardar los METADATOS en la tabla 'songs' de la base de datos
+            // de Supabase (PostgreSQL)
+            const { data, error: dbError } = await supabase
+                .from('songs')
+                .insert([
+                    {
+                        title: metadata.title,
+                        artist: metadata.artist,
+                        album: metadata.album,
+                        duration: metadata.duration,
+                        song_url: songUrl,
+                        // Si tuvieras una imagen de portada, la subirías igual
+
     }
 
     async initDB() {
